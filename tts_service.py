@@ -26,6 +26,10 @@ def text_to_speech_eleven(client, text):
             use_speaker_boost=True,
         ),
     )
+    path = os.getcwd() + '/audios/'
+    if os.path.exists(path) is False:
+        os.mkdir('audios')
+
     filename = f'audios/{str(uuid.uuid4())}.mp3'
     with open(filename, "wb") as f:
         for chunk in response:
@@ -71,7 +75,7 @@ def autoplay(audio_file):
         bytes = audio_file.read()
     
     base64_audio = base64.b64encode(bytes).decode("utf-8")
-    html_audio = f'<audio src="data:audio/mp3;base64,{base64_audio}" controls autoplay style="display: none">'
+    html_audio = f'<audio src="data:audio/mp3;base64,{base64_audio}" controls autoplay style="display: none"> '
     st.markdown(html_audio, unsafe_allow_html=True)
 
 # active microfono

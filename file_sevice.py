@@ -15,5 +15,18 @@ def upload_files(files):
             f.write(file.getbuffer())
 
 def get_files_uploaded():
-    files = os.listdir(os.getcwd() + '/pdf/')
+    path = os.getcwd() + '/pdf/'
+    if os.path.exists(path) is False:
+        os.mkdir('pdf')
+    files = os.listdir(path)
     return files
+
+def delete_audio():
+    files = os.listdir(os.getcwd() + '/audios/')
+    for f in files:
+        os.remove(os.getcwd() + '/audios/' + f)
+
+def delete_files():
+    files = os.listdir(os.getcwd() + '/pdf/')
+    for f in files:
+        os.remove(os.getcwd() + '/pdf/' + f)

@@ -23,6 +23,8 @@ css = '''
   padding: 0 1.5rem;
   color: #fff;
 }
+</style>
+
 '''
 
 bot_template = '''
@@ -41,4 +43,16 @@ user_template = '''
     </div>    
     <div class="message">{{MSG}}</div>
 </div>
+'''
+
+css_all = '''
+    <style>
+        .myButton{
+            position: fixed !important;
+        }
+        .App{
+            color: yellow !important;
+            position:relative !important;
+        }
+    </style>
 '''
