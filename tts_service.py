@@ -3,7 +3,7 @@ from streamlit_mic_recorder import speech_to_text
 import streamlit as st
 import base64
 from gtts import gTTS
-import uuid, playsound, os
+import uuid, os
 import speech_recognition as sr
 from elevenlabs import VoiceSettings
 from elevenlabs.client import ElevenLabs

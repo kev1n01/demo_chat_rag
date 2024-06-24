@@ -68,7 +68,7 @@ def streamlit():
             st.session_state.files_uploaded = get_files_uploaded()
             st.toast('Archivos eliminados con éxito', icon="✅")
         text_from_audio = audio_to_text()
-        st.selectbox('Selecciona modelo tts', ('elevenlabs','elevenlabs', 'gtts', 'openai'), key="tts_model")
+        st.selectbox('Selecciona modelo tts', ('gtts','elevenlabs', 'gtts', 'openai'), key="tts_model")
 
     if "messages" not in st.session_state.keys():
         st.session_state.messages = [
