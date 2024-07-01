@@ -48,7 +48,7 @@ user_template = '''
 css_all = '''
     <style>
         .myButton{
-            position: fixed !important;
+            border-color: rgb(44 64 225) !important;
         }
         .App{
             color: yellow !important;

@@ -7,7 +7,7 @@ from rag import  get_pdf_text, get_text_chunks, get_vectorstore, get_conversatio
 from tts_service import audio_to_text, autoplay, text_to_audio, setup_client_openai, tts, setup_client_elevenlabs, text_to_speech_eleven
 from file_sevice import upload_files, get_files_uploaded, delete_files
 from utils import stream_data
-
+from template_chat import css_all
 def execute_rag(files):
     # obtener texto de pdf
     raw_text = get_pdf_text(files)
@@ -37,34 +37,35 @@ def play_audio(text):
 
 def streamlit():
     load_dotenv()
-    st.set_page_config(page_title='Deache Chat', page_icon='👽', layout='wide')
+    st.set_page_config(page_title='Deache Chat', page_icon='🤖', layout='wide', initial_sidebar_state="collapsed")
+    st.markdown(css_all, unsafe_allow_html=True)
     if "files_uploaded" not in st.session_state:
             st.session_state.files_uploaded = get_files_uploaded()
 
     with st.sidebar:
-        st.header('Chatbot :green[DEACHE] :sunglasses:')
-        with st.form(key="Form :", clear_on_submit = False):
-            st.file_uploader("Cargar archivos aquí 📁", accept_multiple_files=True, type=["pdf"], key="files")
-            submit = st.form_submit_button('Guardar archivos', use_container_width=True, type="primary", )
+        st.header('ASISTENTE :green[DEACHE] 🤖')
+        # with st.form(key="Form :", clear_on_submit = False):
+        #     st.file_uploader("Cargar archivos aquí 📁", accept_multiple_files=True, type=["pdf"], key="files")
+        #     submit = st.form_submit_button('Guardar archivos', use_container_width=True, type="primary", )
         
-            if submit:
-                if len(st.session_state.files) == 0:
-                    st.warning('No se han subido archivos')
-                else:
-                    upload_files(st.session_state.files)
-                    st.session_state.files_uploaded = get_files_uploaded()
-                    st.toast('Archivos subidos con éxito', icon="✅")
+        #     if submit:
+        #         if len(st.session_state.files) == 0:
+        #             st.warning('No se han subido archivos')
+        #         else:
+        #             upload_files(st.session_state.files)
+        #             st.session_state.files_uploaded = get_files_uploaded()
+        #             st.toast('Archivos subidos con éxito', icon="✅")
 
-        st.subheader("Lista de archivos cargados")
-        st.data_editor(st.session_state.files_uploaded, hide_index=True,use_container_width=True)
-        button_delete = st.button("Eliminar archivos cargados")
-        if button_delete:
-            delete_files()
-            st.session_state.files_uploaded = get_files_uploaded()
-            st.toast('Archivos eliminados con éxito', icon="✅")
-        text_from_audio = audio_to_text()
-        st.selectbox('Selecciona modelo tts', ('gtts','elevenlabs', 'gtts', 'openai'), key="tts_model")
+        # st.subheader("Lista de archivos cargados")
+        # st.data_editor(st.session_state.files_uploaded, hide_index=True,use_container_width=True)
+        # button_delete = st.button("Eliminar archivos cargados")
+        # if button_delete:
+        #     delete_files()
+        #     st.session_state.files_uploaded = get_files_uploaded()
+        #     st.toast('Archivos eliminados con éxito', icon="✅")
+        st.selectbox('Selecciona modelo TTS', ('gtts','elevenlabs', 'whisper'), key="tts_model")
 
+    text_from_audio = audio_to_text()
     if "messages" not in st.session_state.keys():
         st.session_state.messages = [
             {"role": "assistant", "content": "Bienvenido mi nombre es Deache, ¿Qué consulta tienes?"}]
