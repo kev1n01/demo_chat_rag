@@ -1,6 +1,5 @@
 .env
 env
-audios/
 pdf/
 
 __pycache__

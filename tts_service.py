@@ -29,7 +29,7 @@ def text_to_speech_eleven(client, text):
     if os.path.exists(path) is False:
         os.mkdir('audios')
 
-    filename = f'audios/{str(uuid.uuid4())}.mp3'
+    filename = f'{os.getcwd()}/audios/{str(uuid.uuid4())}.mp3'
     with open(filename, "wb") as f:
         for chunk in response:
             if chunk:
@@ -58,13 +58,13 @@ def audio_to_text():
 # convert text to audio with tts-1 openai
 def text_to_audio(client, text): # convert text to audio 
     res = client.audio.speech.create(model="tts-1",voice="echo", input=text)
-    filename_audio = f'audios/{str(uuid.uuid4())}.mp3'
-    res.stream_to_file(filename_audio)
+    filename = f'{os.getcwd()}/audios/{str(uuid.uuid4())}.mp3'
+    res.stream_to_file(filename)
 
 # convert text to audio with gtts
 def tts(text): 
     tts = gTTS(text=text, lang='es', slow=False, lang_check=False, tld='es')
-    filename = f'audios/{str(uuid.uuid4())}.mp3'
+    filename = f'{os.getcwd()}/audios/{str(uuid.uuid4())}.mp3'
     tts.save(filename)
     return filename
 
