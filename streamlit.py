@@ -1,16 +1,12 @@
 import streamlit as st
 from file_sevice import upload_files, get_files_uploaded
 from dotenv import load_dotenv
-import openai
-from langchain.vectorstores.pinecone import Pinecone
-import pinecone
 from rag import get_conversation_chain 
 import os
-from rag import  get_pdf_text, get_text_chunks, get_vectorstore, get_conversation_chain
+from rag import  get_pdf_text, get_text_chunks, get_vectorstore, get_conversation_chain,  get_vectorstore_supabase
 from tts_service import audio_to_text, autoplay, text_to_audio, setup_client_openai, tts, setup_client_elevenlabs, text_to_speech_eleven
-from file_sevice import upload_files, get_files_uploaded, load_files, delete_audio, delete_files
+from file_sevice import upload_files, get_files_uploaded, delete_files
 from utils import stream_data
-from template_chat import css_all
 
 def execute_rag(files):
     # obtener texto de pdf
@@ -42,7 +38,6 @@ def play_audio(text):
 def streamlit():
     load_dotenv()
     st.set_page_config(page_title='Deache Chat', page_icon='👽', layout='wide')
-    st.markdown(css_all, unsafe_allow_html=True)
     if "files_uploaded" not in st.session_state:
             st.session_state.files_uploaded = get_files_uploaded()
 
@@ -91,13 +86,13 @@ def streamlit():
             with st.chat_message("assistant"):
                 with st.spinner("Espere un momento por favor..."):  
                     # obtener texto de pdf
-                    raw_text = get_pdf_text(get_files_uploaded())
+                    # raw_text = get_pdf_text(get_files_uploaded())
 
                     # obtener texto en trozos o chunks
-                    text_chunks = get_text_chunks(raw_text)       
+                    # text_chunks = get_text_chunks(raw_text)       
 
                     # cargar vectors del db server
-                    vectorstore = get_vectorstore(text_chunks)
+                    vectorstore = get_vectorstore_supabase()
                     
                     # estado que recibe la respuesta de la consulta
                     chain = get_conversation_chain(vectorstore)
@@ -118,13 +113,13 @@ def streamlit():
             with st.chat_message("assistant"):
                 with st.spinner("Espere un momento por favor..."):  
                     # obtener texto de pdf
-                    raw_text = get_pdf_text(get_files_uploaded())
+                    # raw_text = get_pdf_text(get_files_uploaded())
 
                     # obtener texto en trozos o chunks
-                    text_chunks = get_text_chunks(raw_text)       
+                    # text_chunks = get_text_chunks(raw_text)       
 
                     # cargar vectors del db server
-                    vectorstore = get_vectorstore(text_chunks)
+                    vectorstore = get_vectorstore_supabase()
                     
                     # estado que recibe la respuesta de la consulta
                     chain = get_conversation_chain(vectorstore)

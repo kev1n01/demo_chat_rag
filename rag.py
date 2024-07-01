@@ -5,6 +5,15 @@ from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores.faiss import FAISS
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
+import os
+from supabase import create_client, Client
+from langchain.vectorstores.supabase import SupabaseVectorStore
+
+def get_client_supabase():
+    url: str = os.environ.get("SUPABASE_URL")
+    key: str = os.environ.get("SUPABASE_KEY")
+    supabase: Client = create_client(url, key)
+    return supabase
 
 # lee el pdf y convierte a texto
 def get_pdf_text(files):
@@ -32,6 +41,16 @@ def get_vectorstore(text_chunks):
     # embeddings = HuggingFaceInstructEmbeddings(model_name='hkunlp/instructor-xl')
     vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
     return vectorstore
+
+def get_vectorstore_supabase():
+    embeddings = OpenAIEmbeddings()
+    vector_store = SupabaseVectorStore(
+        embedding = embeddings,
+        client = get_client_supabase(),
+        table_name="documents",
+        query_name="match_documents",
+    )
+    return vector_store
 
 # create conversacion entre llm y db vector
 def get_conversation_chain(vectorstore):

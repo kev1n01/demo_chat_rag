@@ -4,7 +4,6 @@ import streamlit as st
 import base64
 from gtts import gTTS
 import uuid, os
-import speech_recognition as sr
 from elevenlabs import VoiceSettings
 from elevenlabs.client import ElevenLabs
 
@@ -77,15 +76,3 @@ def autoplay(audio_file):
     base64_audio = base64.b64encode(bytes).decode("utf-8")
     html_audio = f'<audio src="data:audio/mp3;base64,{base64_audio}" controls autoplay style="display: none"> '
     st.markdown(html_audio, unsafe_allow_html=True)
-
-# active microfono
-def rm(audio = None):
-    r, mic = sr.Recognizer(), sr.Microphone()
-    with mic as source:
-        r.adjust_for_ambient_noise(source)
-        audio = r.listen(source)
-        text = r.recognize_google_cloud(audio, language='es-ES')
-        if text != "":
-            return text
-        else:
-            return ""
