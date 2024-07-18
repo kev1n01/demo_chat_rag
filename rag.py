@@ -2,18 +2,17 @@ from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
-from langchain.vectorstores.faiss import FAISS
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
-import os
-from supabase import create_client, Client
 from langchain.vectorstores.supabase import SupabaseVectorStore
+from services.login_service import init_connection
+import streamlit as st
 
-def get_client_supabase():
-    url: str = os.environ.get("SUPABASE_URL")
-    key: str = os.environ.get("SUPABASE_KEY")
-    supabase: Client = create_client(url, key)
-    return supabase
+# def get_client_supabase():
+#     url: str = os.environ.get("SUPABASE_URL")
+#     key: str = os.environ.get("SUPABASE_KEY")
+#     supabase: Client = create_client(url, key)
+#     return supabase
 
 # lee el pdf y convierte a texto
 def get_pdf_text(files):
@@ -35,18 +34,12 @@ def get_text_chunks(text):
     chunks = text_splitter.split_text(text)
     return chunks
 
-# almacena los embeedings en una db vector
-def get_vectorstore(text_chunks):
-    embeddings = OpenAIEmbeddings()
-    # embeddings = HuggingFaceInstructEmbeddings(model_name='hkunlp/instructor-xl')
-    vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
-    return vectorstore
-
 def get_vectorstore_supabase():
-    embeddings = OpenAIEmbeddings()
+ 
+    embeddings = OpenAIEmbeddings(api_key=st.secrets["connections"]["openai"]["OPENAI_API_KEY"])
     vector_store = SupabaseVectorStore(
         embedding = embeddings,
-        client = get_client_supabase(),
+        client = init_connection(),
         table_name="documents",
         query_name="match_documents",
     )
@@ -54,7 +47,7 @@ def get_vectorstore_supabase():
 
 # create conversacion entre llm y db vector
 def get_conversation_chain(vectorstore):
-    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0, api_key=st.secrets["connections"]["openai"]["OPENAI_API_KEY"])
     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
     conversation_chain = ConversationalRetrievalChain.from_llm(
         llm=llm,
@@ -62,21 +55,3 @@ def get_conversation_chain(vectorstore):
         memory=memory,
     )
     return conversation_chain
-
-# def pinecone(docs):
-#     # inicializar pinecone
-#     pinecone.init(
-#         api_key= os.getenv('PINECONE_API_KEY'),
-#         environment='gcp-starter'
-#     )
-
-#     index_name = "langchain-demo"
-#     embeddings = ''
-#     # revisando 
-#     if index_name not in pinecone.list_indexes():
-#     # Create new Index
-#         pinecone.create_index(name=index_name, metric="cosine", dimension=768)
-#         docsearch = Pinecone.from_documents(docs, embeddings, index_name=index_name)
-#     else:
-#         # Link to the existing index
-#         docsearch = Pinecone.from_existing_index(index_name, embeddings)

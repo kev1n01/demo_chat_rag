@@ -3,4 +3,5 @@ env
 audios/
 pdf/
 
+.streamlit/secrets.toml
 __pycache__
